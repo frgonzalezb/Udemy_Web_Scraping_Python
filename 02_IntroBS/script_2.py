@@ -8,4 +8,14 @@ content: str = page.text
 parser: str = 'lxml'
 
 soup: BeautifulSoup = BeautifulSoup(content, parser)
-print(soup.prettify())
+# print(soup.prettify())
+
+box = soup.find('article', class_='main-article')
+if box is None:
+    exit()
+
+title: str = box.find('h1').getText()
+print(title)
+
+transcript: str = box.find('div', class_='full-script').getText(' ', True)
+print(transcript)
