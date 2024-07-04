@@ -15,10 +15,7 @@ if box is None:
     exit()
 
 title: str = box.find('h1').getText()
-print(title)
-
 transcript: str = box.find('div', class_='full-script').getText(' ', True)
-print(transcript)
 
-with open('./02_IntroBS/titanic.txt', 'w', encoding='utf-8') as f:
-    f.write(title + '\n\n' + transcript)
+with open('./02_IntroBS/res/titanic_script.txt', 'w', encoding='utf-8') as f:
+    f.write(title.upper() + '\n\n' + transcript)
