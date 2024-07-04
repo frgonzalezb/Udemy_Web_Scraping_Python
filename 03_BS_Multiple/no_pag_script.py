@@ -1,5 +1,5 @@
 """
-Script adaptado para web scraping de múltiples páginas.
+Script adaptado para web scraping de múltiples links (sin paginación).
 
 -------------------------------------------------
 NOTA DE FRANK ANDRADE:
