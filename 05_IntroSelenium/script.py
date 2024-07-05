@@ -5,11 +5,11 @@ https://www.adamchoi.co.uk/overs/detailed
 
 NOTA: De acuerdo a la documentación de Selenium, desde la versión 4.6 ya
 no es necesario setear el path del driver (driver_path) para ejecutar el
-script y, por ende, no es necesario el ChromeDrive para casos de uso
+script y, por ende, no es necesario el ChromeDriver para casos de uso
 generales.
 
-Sin embargo, he decidido dejar ambos modos, el nuevo y el ejemplo del
-curso, de manera seleccionable.
+Sin embargo, he decidido dejar ambos modos, con y sin ChromDriver,
+de manera seleccionable.
 
 Fuente: https://www.selenium.dev/documentation/webdriver/drivers/service/
 """
