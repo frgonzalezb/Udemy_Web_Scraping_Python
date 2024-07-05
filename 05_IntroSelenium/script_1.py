@@ -1,4 +1,6 @@
 """
+Script para probar Selenium.
+
 Página web a usar, ofrecida por Frank:
 https://www.adamchoi.co.uk/overs/detailed
 
