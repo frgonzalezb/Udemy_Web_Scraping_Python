@@ -12,6 +12,7 @@ import pandas as pd
 
 from selenium import webdriver
 from selenium.webdriver.common.by import By
+from selenium.webdriver.chrome.options import Options
 from selenium.webdriver.remote.webelement import WebElement  # 4 typing
 from selenium.common.exceptions import NoSuchElementException
 
@@ -35,7 +36,12 @@ def get_element_as_text(
 
 
 def run_script() -> None:
-    driver: webdriver.Chrome = webdriver.Chrome()
+    options: Options = Options()
+    # options.headless = True  # DEPRECADO!!
+    # https://www.selenium.dev/blog/2023/headless-is-going-away/
+    options.add_argument("--headless=new")
+
+    driver: webdriver.Chrome = webdriver.Chrome(options=options)
     driver.get(URL)
 
     container: WebElement = driver.find_element(
@@ -64,7 +70,9 @@ def run_script() -> None:
         runtime = runtime.split('Duración: ')[-1]
         book_runtimes.append(runtime)
 
-        time.sleep(3)
+        print(f'\n\t{title=}, \n\t{author=}, \n\t{runtime=}')  # dbg
+
+        time.sleep(1)
 
     driver.quit()
 
@@ -74,6 +82,8 @@ def run_script() -> None:
         'Runtime': book_runtimes
     })
 
+    print('\nDataframe created successfully!', '\n', df)
+
     base_dir: str = './06_Proyecto1_AudibleBot/res/'
     filename: str = 'books.csv'
 
@@ -81,6 +91,7 @@ def run_script() -> None:
         os.mkdir(base_dir)
 
     df.to_csv(base_dir + filename, index=False)
+    print('\nThis script has finished its job successfully!')
 
 
 if __name__ == '__main__':
