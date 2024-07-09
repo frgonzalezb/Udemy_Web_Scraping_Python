@@ -13,6 +13,8 @@ import pandas as pd
 from selenium import webdriver
 from selenium.webdriver.common.by import By
 from selenium.webdriver.chrome.options import Options
+from selenium.webdriver.support.ui import WebDriverWait
+from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.remote.webelement import WebElement  # 4 typing
 from selenium.common.exceptions import NoSuchElementException
 
@@ -92,14 +94,28 @@ def run_script() -> None:
         print(f'\nCurrent page: {page}/{last_page}')
         driver.get(url + params)
 
-        container: WebElement = driver.find_element(
-            By.CLASS_NAME,
-            'adbl-impression-container'
+        # container: WebElement = driver.find_element(
+        #     By.CLASS_NAME,
+        #     'adbl-impression-container'
+        # )
+
+        # usando espera explícita
+        container: WebElement = WebDriverWait(driver, 10).until(
+            EC.presence_of_element_located(
+                (By.CLASS_NAME, 'adbl-impression-container')
+            )
         )
 
-        products: list[WebElement] = container.find_elements(
-            By.XPATH,
-            './/li[contains(@class, "productListItem")]'
+        # products: list[WebElement] = container.find_elements(
+        #     By.XPATH,
+        #     './/li[contains(@class, "productListItem")]'
+        # )
+
+        # usando espera explícita
+        products: list[WebElement] = WebDriverWait(container, 10).until(
+            EC.presence_of_all_elements_located(
+                (By.XPATH, './/li[contains(@class, "productListItem")]')
+            )
         )
 
         for product in products:
@@ -116,7 +132,7 @@ def run_script() -> None:
 
             print(f'\n\t{title=}, \n\t{author=}, \n\t{runtime=}')  # dbg
 
-            time.sleep(2)
+            time.sleep(2)  # espera implícita de 2 segundos
 
         current_page += 1
         params = f'?page={current_page}'
