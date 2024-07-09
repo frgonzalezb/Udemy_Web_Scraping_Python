@@ -2,6 +2,7 @@ from typing import Any, Generator
 
 import scrapy
 from scrapy.http.response.html import HtmlResponse
+from scrapy.selector.unified import SelectorList, Selector
 
 
 class WorldometersSpider(scrapy.Spider):
@@ -15,10 +16,14 @@ class WorldometersSpider(scrapy.Spider):
             self,
             response: HtmlResponse
             ) -> Generator[dict[str, Any], Any, None]:
-        title: str | None = response.xpath('//h1/text()').get()
-        countries: list[str] = response.xpath('//td/a/text()').getall()
+        # title: str | None = response.xpath('//h1/text()').get()
+        countries: SelectorList[Selector] = response.xpath('//td/a')
 
-        yield {
-            'title': title,
-            'countries': countries,
-        }
+        for country in countries:
+            name: str | None = country.xpath('.//text()').get()
+            link: str | None = country.xpath('.//@href').get()
+
+            yield {
+                'name': name,
+                'link': link
+            }
