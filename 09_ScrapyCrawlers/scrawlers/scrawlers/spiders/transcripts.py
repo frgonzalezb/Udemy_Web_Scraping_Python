@@ -10,14 +10,18 @@ from scrapy.spiders import CrawlSpider, Rule
 class TranscriptsSpider(CrawlSpider):
     name: Literal['transcripts'] = "transcripts"
     allowed_domains: list[str] = ["subslikescript.com"]
-    start_urls: list[str] = ["https://subslikescript.com/movies"]
+    start_urls: list[str] = ["https://subslikescript.com/movies_letter-X"]
 
-    xpath: str = '//ul[contains(@class, "scripts-list")]/li/a'
+    script_xpath: str = '//ul[contains(@class, "scripts-list")]/li/a'
+    next_page_xpath: str = '(//a[contains(@rel, "next")])[1]'
     rules: tuple[Rule] = (
         Rule(
-            LinkExtractor(restrict_xpaths=xpath),
+            LinkExtractor(restrict_xpaths=script_xpath),
             callback="parse_item",
             follow=True
+        ),
+        Rule(
+            LinkExtractor(restrict_xpaths=next_page_xpath)
         ),
     )
 
@@ -31,6 +35,6 @@ class TranscriptsSpider(CrawlSpider):
         yield {
             'title': article.xpath('./h1/text()').get(),
             'plot': article.xpath('./p').get() if article.xpath('./p') else '',
-            'script': article.xpath('./div[@class="full-script"]').getall(),
+            # 'script': article.xpath('./div[@class="full-script"]').getall(),
             'url': response.url
         }
