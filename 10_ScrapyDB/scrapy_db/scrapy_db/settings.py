@@ -68,7 +68,7 @@ DEFAULT_REQUEST_HEADERS = {
 # Configure item pipelines
 # See https://docs.scrapy.org/en/latest/topics/item-pipeline.html
 ITEM_PIPELINES = {
-   "scrapy_db.pipelines.ScrapyDbPipeline": 300,
+   "scrapy_db.pipelines.MongoDbPipeline": 300,
 }
 
 # Enable and configure the AutoThrottle extension (disabled by default)
