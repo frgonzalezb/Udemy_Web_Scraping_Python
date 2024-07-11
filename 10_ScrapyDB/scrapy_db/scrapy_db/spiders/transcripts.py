@@ -62,10 +62,14 @@ class TranscriptsSpider(CrawlSpider):
             ) -> Generator[dict[str, Any], Any, None]:
         article_xpath: str = '//article[contains(@class, "main-article")]'
         article: SelectorList[Selector] = response.xpath(article_xpath)
+        transcript_list: list[str] = article.xpath(
+            './div[@class="full-script"]'
+        ).getall()
+        transcript_string: str = ' '.join(transcript_list)  # 4 SQLite
         yield {
             'title': article.xpath('./h1/text()').get(),
             'plot': article.xpath('./p').get() if article.xpath('./p') else '',
-            # 'script': article.xpath('./div[@class="full-script"]').getall(),
+            'script': transcript_string,
             'url': response.url,
-            'user-agent': response.request.headers['User-Agent']
+            # 'user-agent': response.request.headers['User-Agent']
         }
