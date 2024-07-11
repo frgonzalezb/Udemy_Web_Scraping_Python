@@ -1,0 +1,42 @@
+import json
+import logging
+from typing import Any, Generator
+
+import scrapy
+from scrapy.http.response.html import HtmlResponse
+from scrapy.selector.unified import SelectorList, Selector
+
+
+logging.basicConfig(
+    filename='./scrapy.log',
+    filemode='a',
+    format='%(asctime)s,%(msecs)d %(name)s %(levelname)s %(message)s',
+    datefmt='%H:%M:%S',
+    level=logging.DEBUG,
+    encoding='utf-8'
+)
+
+
+class QuotesSpider(scrapy.Spider):
+    name = "quotes"
+    allowed_domains = ["quotes.toscrape.com"]
+    start_urls = ["https://quotes.toscrape.com/api/quotes?page=1"]
+
+    custom_settings: dict[str, Any] = {
+        'DOWNLOAD_DELAY': 0.5,  # Fija un retraso de 0.5 segundos
+    }
+
+    def parse(
+            self,
+            response: HtmlResponse
+            ) -> Generator[dict[str, Any], Any, None]:
+
+        json_response = json.loads(response.body)
+        quotes = json_response.get('quotes')
+
+        for quote in quotes:
+            yield {
+                'author': quote.get('author').get('name'),
+                'tags': quote.get('tags'),
+                'quotes': quote.get('text'),
+            }
