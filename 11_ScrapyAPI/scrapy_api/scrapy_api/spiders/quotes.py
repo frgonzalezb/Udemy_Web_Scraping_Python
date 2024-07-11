@@ -31,8 +31,8 @@ class QuotesSpider(scrapy.Spider):
             response: HtmlResponse
             ) -> Generator[dict[str, Any], Any, None]:
 
-        json_response = json.loads(response.body)
-        quotes = json_response.get('quotes')
+        json_response: Any = json.loads(response.body)
+        quotes: Any = json_response.get('quotes')
 
         for quote in quotes:
             yield {
@@ -40,3 +40,11 @@ class QuotesSpider(scrapy.Spider):
                 'tags': quote.get('tags'),
                 'quotes': quote.get('text'),
             }
+
+        has_next: Any = json_response.get('has_next')
+        if has_next:
+            next_page: Any = json_response.get('page') + 1
+            yield response.follow(
+                url=f'https://quotes.toscrape.com/api/quotes?page={next_page}',
+                callback=self.parse
+            )
