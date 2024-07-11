@@ -60,7 +60,6 @@ class SQLitePipeline:
             'script TEXT,'\
             'url TEXT'\
             ')'
-        logging.debug(f'\n\nPIPELINE — CREATE QUERY {query}\n')
         try:
             self.cursor.execute(query)
             self.connection.commit()
@@ -71,7 +70,6 @@ class SQLitePipeline:
     def process_item(self, item: dict, spider: TranscriptsSpider) -> dict:
         query: str = 'INSERT INTO transcripts (title, plot, script, url) '\
             'VALUES (?, ?, ?, ?)'
-        logging.debug(f'\n\nPIPELINE — INSERT QUERY {query}\n')
         try:
             self.cursor.execute(
                 query,
