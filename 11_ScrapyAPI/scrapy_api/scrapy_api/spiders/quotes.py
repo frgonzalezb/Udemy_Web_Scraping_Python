@@ -4,11 +4,10 @@ from typing import Any, Generator
 
 import scrapy
 from scrapy.http.response.html import HtmlResponse
-from scrapy.selector.unified import SelectorList, Selector
 
 
 logging.basicConfig(
-    filename='./scrapy.log',
+    filename='./quotes.log',
     filemode='a',
     format='%(asctime)s,%(msecs)d %(name)s %(levelname)s %(message)s',
     datefmt='%H:%M:%S',
