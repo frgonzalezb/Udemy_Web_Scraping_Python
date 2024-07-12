@@ -1,3 +1,4 @@
+import os
 import logging
 from typing import Any, Generator
 
@@ -23,37 +24,27 @@ class AdamchoiSpider(scrapy.Spider):
     # allowed_domains = ["www.adamchoi.co.uk"]
     # start_urls = ["https://www.adamchoi.co.uk"]
 
-    script: str = '''
-        function main(splash, args)
-            splash.private_mode_enabled = false
-
-            assert(splash:go(args.url))
-            assert(splash:wait(3))
-
-            all_matches = splash:select_all("label.btn.btn-sm.btn-primary.ng-pristine.ng-untouched.ng-valid.ng-not-empty")
-            all_matches[2]:mouse_click()
-            assert(splash:wait(3))
-            splash:set_viewport_full()
-
-            return {
-                html = splash:html(),
-                png = splash:png(),
-                har = splash:har(),
-            }
-        end
-    '''
-
     custom_settings: dict[str, Any] = {
         'DOWNLOAD_DELAY': 0.5,  # Fija un retraso de 0.5 segundos
     }
 
+    def get_lua_script(self) -> str:
+        cwd: str = os.getcwd().replace('\\', '/')
+        if cwd.endswith('scrapy_plus_splash'):
+            cwd = cwd[: -len('scrapy_plus_splash')]
+        with open(cwd + '/script.lua') as f:
+            script: str = f.read()
+
+        return script
+
     def start_requests(self) -> Generator[SplashRequest, Any, None]:
+        script: str = self.get_lua_script()
         url: str = 'https://www.adamchoi.co.uk/overs/detailed'
         yield SplashRequest(
             url=url,
             callback=self.parse,
             endpoint='execute',
-            args={'lua_source': self.script, 'url': url},
+            args={'lua_source': script, 'url': url},
         )
 
     def parse(
