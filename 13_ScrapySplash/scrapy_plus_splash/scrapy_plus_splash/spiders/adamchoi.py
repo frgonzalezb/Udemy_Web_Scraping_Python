@@ -2,6 +2,9 @@ import logging
 from typing import Any, Generator
 
 import scrapy
+from scrapy.http.response.html import HtmlResponse
+from scrapy.selector.unified import SelectorList, Selector
+
 from scrapy_splash import SplashRequest
 
 
@@ -17,7 +20,7 @@ logging.basicConfig(
 
 class AdamchoiSpider(scrapy.Spider):
     name = "adamchoi"
-    allowed_domains = ["www.adamchoi.co.uk"]
+    # allowed_domains = ["www.adamchoi.co.uk"]
     # start_urls = ["https://www.adamchoi.co.uk"]
 
     script: str = '''
@@ -53,5 +56,18 @@ class AdamchoiSpider(scrapy.Spider):
             args={'lua_source': self.script, 'url': url},
         )
 
-    def parse(self, response) -> None:
-        logging.debug(f'{response.body=}')
+    def parse(
+            self,
+            response: HtmlResponse
+            ) -> Generator[dict[str, str | None], Any, None]:
+
+        logging.debug(f'{response.body=}')  # dbg
+        rows: SelectorList[Selector] = response.xpath('//tr')
+
+        for row in rows:
+            yield {
+                'date': row.xpath('./td[1]/text()').get(),
+                'home_team': row.xpath('./td[2]/text()').get(),
+                'score': row.xpath('./td[3]/text()').get(),
+                'away_team': row.xpath('./td[4]/text()').get(),
+            }
